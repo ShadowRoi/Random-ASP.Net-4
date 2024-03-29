@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "jYhNaYkC5HaRUSUEWHamlvi7YNUqH5suBDJlMNzyYOJkZJXBwdyZSEH5gGaujFZda3SEk4slbUkJt/5sOLnTTw==",
+  "dgSpecHash": "MEpcEDkmeDTbuIIEWI7lgrirARqYSQOwVK0txBhsBt/XH0we9CyKkJY39yyj6PhkKaBCHQdulBiHTwLd2WBCsQ==",
   "success": true,
   "projectFilePath": "/Users/rileyradler/Projects/ASP Project/ASP Project/ASP Project.csproj",
   "expectedPackageFiles": [
@@ -10,7 +10,10 @@
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore/6.5.0/swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swagger/6.5.0/swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
-    "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+    "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.netcore.app.ref/7.0.14/microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.14/microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.netcore.app.host.osx-arm64/7.0.14/microsoft.netcore.app.host.osx-arm64.7.0.14.nupkg.sha512"
   ],
   "logs": []
 }
