@@ -31,3 +31,36 @@
 /Users/rileyradler/Projects/ASP Project/ASP Project/obj/Debug/net7.0/ASP Project.pdb
 /Users/rileyradler/Projects/ASP Project/ASP Project/obj/Debug/net7.0/ASP Project.genruntimeconfig.cache
 /Users/rileyradler/Projects/ASP Project/ASP Project/obj/Debug/net7.0/ref/ASP Project.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/appsettings.Development.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/appsettings.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/ASP Project
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/ASP Project.deps.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/ASP Project.runtimeconfig.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/ASP Project.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/ASP Project.pdb
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/Microsoft.AspNetCore.OpenApi.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/Microsoft.OpenApi.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/bin/Debug/net7.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.csproj.AssemblyReference.cache
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.GeneratedMSBuildEditorConfig.editorconfig
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.AssemblyInfoInputs.cache
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.AssemblyInfo.cs
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.csproj.CoreCompileInputs.cache
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.MvcApplicationPartsAssemblyInfo.cs
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.MvcApplicationPartsAssemblyInfo.cache
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets/msbuild.ASP Project.Microsoft.AspNetCore.StaticWebAssets.props
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets/msbuild.build.ASP Project.props
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets/msbuild.buildMultiTargeting.ASP Project.props
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets/msbuild.buildTransitive.ASP Project.props
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets.pack.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets.build.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/staticwebassets.development.json
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/scopedcss/bundle/ASP Project.styles.css
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.csproj.CopyComplete
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/refint/ASP Project.dll
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.pdb
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ASP Project.genruntimeconfig.cache
+/Users/rileyradler/Projects/ASP Project 2/ASP Project/obj/Debug/net7.0/ref/ASP Project.dll

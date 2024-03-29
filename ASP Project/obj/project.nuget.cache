@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5VJbZ6fmujnzIwvpzk6IWK4QEOniubESovlqH6BddoWO0ZH6S2tYSnZlAX/J4Yo11BRLQyXa6V5XgP+zZBKe3g==",
+  "dgSpecHash": "fk0lmUTzO5wcPMlrAy0+EK/aWa2PonjXTnl2aI4Yu6je83elI2sDKGFqW7i8CW9GV/R69elNsJMuHndtJ1LI4A==",
   "success": true,
-  "projectFilePath": "/Users/rileyradler/Projects/ASP Project/ASP Project/ASP Project.csproj",
+  "projectFilePath": "/Users/rileyradler/Projects/ASP Project 2/ASP Project/ASP Project.csproj",
   "expectedPackageFiles": [
     "/Users/rileyradler/.nuget/packages/microsoft.aspnetcore.openapi/7.0.7/microsoft.aspnetcore.openapi.7.0.7.nupkg.sha512",
     "/Users/rileyradler/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
@@ -10,7 +10,10 @@
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore/6.5.0/swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swagger/6.5.0/swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.5.0/swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
-    "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+    "/Users/rileyradler/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.5.0/swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.netcore.app.ref/7.0.14/microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.14/microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512",
+    "/Users/rileyradler/.nuget/packages/microsoft.netcore.app.host.osx-arm64/7.0.14/microsoft.netcore.app.host.osx-arm64.7.0.14.nupkg.sha512"
   ],
   "logs": []
 }
