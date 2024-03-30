@@ -1,44 +1,78 @@
-﻿
-using System.Text.Json; // Χρησιμοποιούμε το library Json για να κάνουμε το Deserialise 
+﻿/*
+Έχω αφαιρέσει τα comments εδώ από τα προηγούμενα projects στα σημεία όπου ο κώδικας είναι ίδιος για να μην ποιάνει πολύ χώρο
+Σε αυτό το project θα φτιάξουμε μία DataBase με Dapper implementation καθώς είναι ποιο γρήγορο και efficient από το EF Core
+καθώς μπορούμε να συνεχίζουμε να χρησιμοποιούμε Data Objects για να μπορέσουμε να κάνουμε store τα data με ευκολία
+Δυστηχώς το Microsoft SQL Server δεν υποστηρίζεται σε mac οπότε θα το τρέξουμε μέσω του Docker 
+*/
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Data.SqlClient; // Χρησιμοποιούμε αυτό το library για να μπορούμε να συνδέσουμε την SQL
+using Dapper;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+/*
+ Δεδομένα για την DB. Η βάση δεδομένων ονομάζεται Main και περιέχει ένα table(Countries) και έχει τισ παρακάτω στήλες:
+1 countries_id ως Primary key ως Integer με Auto Increment γιατί μπορεί κάποια χώρα να αλλάξει όνομα η κάτι
+2 name ως nvchar μέχρι 50 στοιχεία διότι λογικά φτάνουν
+3 capital ως nvchar μέχρι 50 στοιχεία για την προτεύουσα
+4 borders ως nvchar μέχρι 100 στοιχεία διότι τελικά κάποια χώρα είχε παραπάνω από 50..
+H Βάση δεδομένων προς το παρόν έτσι όπως είναι φτιαγμένη τα δεδομένα θα γίνονται duplicate κάθε φορά που δέχεται το HttpGet αλλά αυτό θα το φτιάξουμε στο επόμενο version 
+*/
 
 namespace ASP_Project.Controllers
 {
-    [Route("api/intergercontroller")] //Βάζουμε το σημείο του API που θα δέχεται το get από τον client
+    [Route("api/intergercontroller")] 
     [ApiController]
 
-    public class Countries : ControllerBase // Κάνουμε inherit από την κλάση ControllerBase 
+    public class Countries : ControllerBase 
     {
-        [HttpGet] // Δηλώνουμε πως ο server δέχεται HttpGet από το Rest API έτσι ώστε να γνωρίζει πως δεν υπάρχουν arguments από τον client
-        public IActionResult Main() // Φτιάχνουμε την main κλάση
+
+        
+        [HttpGet] 
+        public IActionResult Main() 
         {
-            string result = client.GetStringAsync(client.BaseAddress).Result; // Δηλώνουμε ένα variable όπου θα παίρνει σε String από το Address που έχουμε δώσει το JSON από τα countries
-            //Για παραπάνω efficiency ώστε να υπάρξει λιγότερο network data που θα στείλουμε στον client θα βγάλουμε τα μη απαραίτητα δεδομένα που έχουμε από το restcountries και θα κρατήσουμε μόνο αυτά που χρειαζόμαστε μέσω του Json Deserialize
-            List<Objectjson> test = JsonSerializer.Deserialize<List<Objectjson>>(result); //Φτιάχνουμε μία λίστα όπου θα βάλουμε τα στοιχεία που θα γίνουν Deserialize στην μορφή του Objectjson που έχουμε φτιάξει
-            return Ok(test);  // επιστρέφουμε Ok δηλαδή status code 200 ότι η διαδικασία ολοκληρώθηκε επιτυχώς και επιστρέφουμε την λίστα test που έχουμε κάνει Deserialize πίσω στον client 
+           
+            string result = client.GetStringAsync(client.BaseAddress).Result; 
+           
+            List<Objectjson> DeserializedJSON = JsonSerializer.Deserialize<List<Objectjson>>(result);
+
+            List<DB_ObjectStructure> DB_AllObjects = new List<DB_ObjectStructure>(); // Θα φτιάξουμε μία λίστα όπου θα βάλουμε μέσα όλα τα objects σε μορφή όπως θέλουμε για να μπορούμε να τα βάλουμε στην Βάση δεδομένων
+
+            foreach (var i in DeserializedJSON) // Δεν μπορούσα να σκεφτώ κάτι καλύτερο που να δούλευε, οπότε απλά φτιάξαμε ένα converter που να μετατρέπει το Deserialized JSON αρχείο ως μορφή του DB_ObjectStructure που έχουμε δηλώσει 
+            {
+                DB_ObjectStructure DB_Object = new DB_ObjectStructure // Για κάθε loop να δημηιουργεί ένα καινούργιο object DB_OBjectStructure 
+                {
+                    name = i.name.common, 
+                    capital = string.Join(",",i.capital), //Βάζουμε τα στοιχεία από το DeserializedJSON ως DB_ObjectStructure και βάζουμε ανάμεσα ένα "," για να βγεί στην μορφή που θέλουμε αλλιώς θα έχει error 
+                    borders = string.Join(",",i.borders)
+                };
+
+                DB_AllObjects.Add(DB_Object); //Βάζουμε κάθε έτοιμο Object στην λίστα DB_AllObjects 
+            }
+            
+            string addquery = "INSERT INTO Countries (name,capital,borders) VALUES (@name,@capital,@borders)"; // Δηλώνουμε με Dapper implementation τον κώδικα SQL με τρόπο που θέλουμε για να βάλει τα Object στην μορφή που χρειαζόμαστε 
+            var connectionstring = "Server=localhost; Database=Main; User Id=SA; Password=Asahilinux1;"; //Τα στοιχεία που χρειάζονται για να συνδεθούμε στην βάση δεδομένων μαζί με το όνομα χρήστη και κωδικό(Είναι ένας τυχαίος κωδικός που σκέφτηκα στην στιγμή)
+
+            using (var db = new SqlConnection(connectionstring)) //Χρησημοποιούμε το using για να αφαιρέσουμε τα πράγματα που δεν χρειάζονται αφού ολοκληρωθούν για καλύτερο efficiency, νομίζω μόνο SQLConnection θα γίνει dispose
+            {
+                foreach (var i in DB_AllObjects)
+                {
+                    db.Query(addquery, i); // Κάνουμε μία loop για κάθε αντικείμενο στην λίστα και να στέλνει στην db τα δεδομένα και να τα αποθηκεύει
+                }
+
+            }
+
+              return Ok(DB_AllObjects);  //Στέλνουμε πως η διαδικασία ολοκληρώθηκε με επιτυχεία και στέλνουμε πίσω την λίστα DB_AllObjects αντί το DeserializedJSON διότι είναι ποιο οργανωμένο
             
         }
+        
 
-        private static readonly HttpClient client = new(new SocketsHttpHandler // δημιουργούμε ένα καινούργιο HttpClient με τρόπο έτσι ώστε να μπορεί να ξανα χρησημοποιηθεί αντί να ξαναφτιαχτεί από την αρχή για παραπάνω efficiency σε περίπτωση που είναι σαν Transient ή Scoped
+        private static readonly HttpClient client = new(new SocketsHttpHandler 
         {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(1) //Βάζουμε τον χρόνο που θα τελειώνει το socket να είναι κάθε ένα λεπτό για να ελέχνει την IP σε περίπτωση που λήξη το προτόκολο TTL του DNS
+            PooledConnectionLifetime = TimeSpan.FromMinutes(1) 
         })
         {
-            BaseAddress = new Uri("https://restcountries.com/v3.1/all?fields=name,capital,borders") // Βάζουμε την διεύθυνση που θα παίρνει το JSON το Http(Μέσα στο Documentation τους δεν βρήκα τρόπο εαν γίνεται να φέρεις μόνο το common name για παραπάνω efficiency)
+            BaseAddress = new Uri("https://restcountries.com/v3.1/all?fields=name,capital,borders") 
         };
-
-        public class Objectjson  // Φτιάχνουμε την κλάση όπου περιέχονται τα στοιχεία που χρειαζόμαστε να επιστρέψουμε στον client για να κάνουμε Deserialize από το JSON που μας επιστρέφει το restcountries
-        {
-            public Name name { get; set; } // παίρνουμε το στοιχείο name και το δηλώνουμε ως Object 
-            public List<string> capital { get; set; } // Δηλώνουμε και το capital σαν list παρόλο που περιέχει μόνο ένα string διότι το JSON το επιστρέφει μέσα σε Array
-            public List<string> borders { get; set; } // Δηλώνουμε και το borders σαν list διότι περιέχει ένά Array που ανάλογα την χώρα είτε έχει Data ή και όχι
-        }
-        public class Name //Δηλώνουμε το Name σαν object διότι περιέχει το common name μέσα του όταν έρχεται από το JSON αρχέιο
-        {
-            public string common { get; set; } // Δηλώνουμε πως μέσα στο Object name περιέχεται το common και το δηλώνουμε σαν string 
-        }
 
     }
 }
