@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/rileyradler/Projects/ASP Project 3/ASP Project/ASP Project.csproj": {}
+    "/Users/rileyradler/Projects/ASP Project 4/ASP Project/ASP Project.csproj": {}
   },
   "projects": {
-    "/Users/rileyradler/Projects/ASP Project 3/ASP Project/ASP Project.csproj": {
+    "/Users/rileyradler/Projects/ASP Project 4/ASP Project/ASP Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/rileyradler/Projects/ASP Project 3/ASP Project/ASP Project.csproj",
+        "projectUniqueName": "/Users/rileyradler/Projects/ASP Project 4/ASP Project/ASP Project.csproj",
         "projectName": "ASP Project",
-        "projectPath": "/Users/rileyradler/Projects/ASP Project 3/ASP Project/ASP Project.csproj",
+        "projectPath": "/Users/rileyradler/Projects/ASP Project 4/ASP Project/ASP Project.csproj",
         "packagesPath": "/Users/rileyradler/.nuget/packages/",
-        "outputPath": "/Users/rileyradler/Projects/ASP Project 3/ASP Project/obj/",
+        "outputPath": "/Users/rileyradler/Projects/ASP Project 4/ASP Project/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/rileyradler/.nuget/NuGet/NuGet.Config"

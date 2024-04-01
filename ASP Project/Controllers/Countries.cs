@@ -1,78 +1,121 @@
-﻿/*
-Έχω αφαιρέσει τα comments εδώ από τα προηγούμενα projects στα σημεία όπου ο κώδικας είναι ίδιος για να μην ποιάνει πολύ χώρο
-Σε αυτό το project θα φτιάξουμε μία DataBase με Dapper implementation καθώς είναι ποιο γρήγορο και efficient από το EF Core
-καθώς μπορούμε να συνεχίζουμε να χρησιμοποιούμε Data Objects για να μπορέσουμε να κάνουμε store τα data με ευκολία
-Δυστηχώς το Microsoft SQL Server δεν υποστηρίζεται σε mac οπότε θα το τρέξουμε μέσω του Docker 
-*/
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient; // Χρησιμοποιούμε αυτό το library για να μπορούμε να συνδέσουμε την SQL
+using System.Data.SqlClient; 
 using Dapper;
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-/*
- Δεδομένα για την DB. Η βάση δεδομένων ονομάζεται Main και περιέχει ένα table(Countries) και έχει τισ παρακάτω στήλες:
-1 countries_id ως Primary key ως Integer με Auto Increment γιατί μπορεί κάποια χώρα να αλλάξει όνομα η κάτι
-2 name ως nvchar μέχρι 50 στοιχεία διότι λογικά φτάνουν
-3 capital ως nvchar μέχρι 50 στοιχεία για την προτεύουσα
-4 borders ως nvchar μέχρι 100 στοιχεία διότι τελικά κάποια χώρα είχε παραπάνω από 50..
-H Βάση δεδομένων προς το παρόν έτσι όπως είναι φτιαγμένη τα δεδομένα θα γίνονται duplicate κάθε φορά που δέχεται το HttpGet αλλά αυτό θα το φτιάξουμε στο επόμενο version 
-*/
+using Microsoft.Extensions.Caching.Memory;
+
 
 namespace ASP_Project.Controllers
 {
-    [Route("api/intergercontroller")] 
+    [Route("api/intergercontroller")]
     [ApiController]
 
-    public class Countries : ControllerBase 
+    public class Countries : ControllerBase
     {
 
-        
-        [HttpGet] 
-        public IActionResult Main() 
+        private readonly IMemoryCache memorycache; // Προσθέτουμε το IMemoryCache στο controller που έχουμε μέσω dependency injection
+        private readonly string memorycachekey = "countrieskey"; // Βάζουμε ένα κλειδί για να μπορεί ο server να αναγνωρίσει το μέρος του cache που περιέχει τις χώρες
+
+        public Countries(IMemoryCache _memorycache) // φτιάχνουμε το memory cache μέσο του constractor 
         {
-           
-            string result = client.GetStringAsync(client.BaseAddress).Result; 
-           
-            List<Objectjson> DeserializedJSON = JsonSerializer.Deserialize<List<Objectjson>>(result);
+            memorycache = _memorycache;
+        }
 
-            List<DB_ObjectStructure> DB_AllObjects = new List<DB_ObjectStructure>(); // Θα φτιάξουμε μία λίστα όπου θα βάλουμε μέσα όλα τα objects σε μορφή όπως θέλουμε για να μπορούμε να τα βάλουμε στην Βάση δεδομένων
 
-            foreach (var i in DeserializedJSON) // Δεν μπορούσα να σκεφτώ κάτι καλύτερο που να δούλευε, οπότε απλά φτιάξαμε ένα converter που να μετατρέπει το Deserialized JSON αρχείο ως μορφή του DB_ObjectStructure που έχουμε δηλώσει 
+        [HttpGet]
+        public IActionResult Main()
+        {
+            // Ξεκινάμε την υλοποίηση του ERP Diagram, οι ρόμβοι σε κώδικα είναι σαν να μεταφράζονται σε if
+            if (memorycache.TryGetValue(memorycachekey, out List<DB_ObjectStructure> CachedObjects)) // Ελέγχουμε εαν στην memorycache υπάρχει το κλειδί για τις χώρες, εαν υπάρχει τότε να δημιουργήσε μία λίστα σε μορφή DB_ObjectStructure και τα τοποθετεί μέσα στην λίστα
             {
-                DB_ObjectStructure DB_Object = new DB_ObjectStructure // Για κάθε loop να δημηιουργεί ένα καινούργιο object DB_OBjectStructure 
-                {
-                    name = i.name.common, 
-                    capital = string.Join(",",i.capital), //Βάζουμε τα στοιχεία από το DeserializedJSON ως DB_ObjectStructure και βάζουμε ανάμεσα ένα "," για να βγεί στην μορφή που θέλουμε αλλιώς θα έχει error 
-                    borders = string.Join(",",i.borders)
-                };
-
-                DB_AllObjects.Add(DB_Object); //Βάζουμε κάθε έτοιμο Object στην λίστα DB_AllObjects 
+                return Ok(CachedObjects); // Στείλε πίσω στον client τα Objects από την cache 
             }
-            
-            string addquery = "INSERT INTO Countries (name,capital,borders) VALUES (@name,@capital,@borders)"; // Δηλώνουμε με Dapper implementation τον κώδικα SQL με τρόπο που θέλουμε για να βάλει τα Object στην μορφή που χρειαζόμαστε 
-            var connectionstring = "Server=localhost; Database=Main; User Id=SA; Password=Asahilinux1;"; //Τα στοιχεία που χρειάζονται για να συνδεθούμε στην βάση δεδομένων μαζί με το όνομα χρήστη και κωδικό(Είναι ένας τυχαίος κωδικός που σκέφτηκα στην στιγμή)
 
-            using (var db = new SqlConnection(connectionstring)) //Χρησημοποιούμε το using για να αφαιρέσουμε τα πράγματα που δεν χρειάζονται αφού ολοκληρωθούν για καλύτερο efficiency, νομίζω μόνο SQLConnection θα γίνει dispose
+            else // Εαν δεν υπάρχουν στην cache τότε ελέγχουμε στην βάση δεδομένων 
             {
-                foreach (var i in DB_AllObjects)
-                {
-                    db.Query(addquery, i); // Κάνουμε μία loop για κάθε αντικείμενο στην λίστα και να στέλνει στην db τα δεδομένα και να τα αποθηκεύει
+
+                var connectionstring = "Server=localhost; Database=Main; User Id=SA; Password=Asahilinux1;";
+                string getcountries = "SELECT name,capital,borders FROM Countries"; // Φτιάχνουμε σε SQL να πάρουμε τα name,capital,borders εαν υπάρχουν
+
+                var db = new SqlConnection(connectionstring);
+
+                var answer = db.Query<DB_ObjectStructure>(getcountries); // Ζητούμε να μας επιστρέψει τα δεδομένα η βάση δεδομένων σε μορφή DB_OBjectsStructure
+                int count = answer.Count(); // ελέγχουμε τις σειρές που υπάρχουν για να ελένξουμε εαν η βάση δεδομένων είναι άδεια 
+
+                if (count != 0) // Εαν δεν είναι άδεια τότε έχει τις χώρες οπότε 
+                {       
+                    memorycache.Set(memorycachekey, answer); // Βάζουμε τις χώρες που μας επέστρεψε βάση δεδομένων στην cache 
+                    return Ok(answer); //Επιστρέφουμε στον client τις χώρες
                 }
 
+                else //Εαν η Βάση δεδομένων είναι άδεια τότε
+                {
+                    List<Objectjson> DeserializedJSON; // Δηλώνουμε μία λίστα ως Objectjson έξω από το eexception handling για να μην είναι local variable 
+
+                    try // Θα τρέξουμε τον παρακάτω κώδικα μέσω try και catch έτσι ώστε να πιάσουμε πιθανά errors που μπορεί να συμβούν
+                    {
+                        string result = client.GetStringAsync(client.BaseAddress).Result; // Σε περίπτωση που το rest countries δεν είναι διαθέσημο θα υπάρξει error
+                        DeserializedJSON = JsonSerializer.Deserialize<List<Objectjson>>(result);// Βάζουμε και το Deserialization για exception handling καθώς υπάρχει το ενδεχόμενο να αλλάξουν τον τρόπο που έρχονται τα δεδομένα μέσω του json και να υπάρξει πρόβλημα
+                    }
+                    catch (Exception)
+                    {
+                        return StatusCode(500); // Για οποιοδήποτε πρόβλημα που συμβεί σε αυτή τη διαδικασία τότε επέστρεψε στον client "Server Internal Error"
+                    }
+
+
+                    List<DB_ObjectStructure> DB_AllObjects = new List<DB_ObjectStructure>(); 
+
+                    foreach (var i in DeserializedJSON) 
+                    {
+                        DB_ObjectStructure DB_Object = new DB_ObjectStructure 
+                        {
+                            name = i.name.common,
+                            capital = string.Join(",", i.capital), 
+                            borders = string.Join(",", i.borders)
+                        };
+
+                        DB_AllObjects.Add(DB_Object); 
+                    }
+
+                    string addquery = "INSERT INTO Countries (name,capital,borders) VALUES (@name,@capital,@borders)"; 
+                    {
+                        foreach (var i in DB_AllObjects)
+                        {
+                            db.Query(addquery, i); 
+                        }
+
+                    }
+                    memorycache.Set(memorycachekey, DB_AllObjects); // Αφού τοποθετηθούν τα δεδομένα στην βάση δεδομένων τότε θα τα βάλουμε και στην cache με βάση του ERP Diagram 
+                    return Ok(DB_AllObjects);
+
+                }
             }
 
-              return Ok(DB_AllObjects);  //Στέλνουμε πως η διαδικασία ολοκληρώθηκε με επιτυχεία και στέλνουμε πίσω την λίστα DB_AllObjects αντί το DeserializedJSON διότι είναι ποιο οργανωμένο
-            
         }
-        
 
-        private static readonly HttpClient client = new(new SocketsHttpHandler 
+
+        private static readonly HttpClient client = new(new SocketsHttpHandler
         {
-            PooledConnectionLifetime = TimeSpan.FromMinutes(1) 
+            PooledConnectionLifetime = TimeSpan.FromMinutes(1)
         })
         {
-            BaseAddress = new Uri("https://restcountries.com/v3.1/all?fields=name,capital,borders") 
+            BaseAddress = new Uri("https://restcountries.com/v3.1/all?fields=name,capital,borders")
         };
 
     }
 }
+
+/* Συμπεράσματα
+    Καθώς τα αποτελέσματα που ζητούνται τηρούνται αξίζει να σημειωθεί πως μπορούν να υπάρξουν κάποιες πολύ σημαντικές βελτιώσεις.
+Αρχικά η εφαρμογή στην συγκεκριμένη κατάσταση ΔΕΝ είναι scalable διότι δεν μπορούμε να χρησημοποιήσουμε την βάση δεδομένων για άλλα πράξεις,
+καθώς το Primary key δεν αντιστοιχεί σε μία χώρα. Θεωρητικά με τον συγκεκριμένο τρόπο λαμβάνουμε πληροφορίες όπως name,capital και borders όπου όλα αυτά τα δεδομένα μπορεί να αλλάξουν.
+Αυτό που θα πρέπει να κάνουμε είναι να ζητάμε από το rest countries να μας φέρνει για κάθε χώρα ένα δεδομένο όπως πχ serial number όπου θα μπορούμε να το χρησημοποιήσουμε ως Primary key.
+Έτσι με αυτόν τον τρόπο το serial number δεν θα αλλάξει ποτέ και θα μπορούμε να το χρησημοποιήσουμε σωστά και να μπορούμε να ενημερώνουμε την βάση δεδομένων σωστά και ασφαλές.
+
+    Όσο αφορά το memory caching αναλόγως την αφαρμογή και τις πράξεις που κάνουμε θα πρέπει να την ρυθμίσουμε για το πόση ώρα θα πρέπει να κρατήσει τα δεδομένα στην cache.
+Διότι εαν δεν χρειάζεται συχνά να στέλνει τα συγκεκριμένα δεδομένα τότε μπορούμε να την ρυθμήσουμε έτσι ώστε να αδειάζει την memory από τον server μετά από κάποιο χρονικό διάστημα.
+
+    Επίσης πιθανών να είναι καλύτερα και ποιο efficient αντί να πέρνουμε τα δεδομένα με GetStringASync να χρησιμοποιούσαμε το GetFromJsonAsync καθώς με μία μέθοδο θα το έκανε και deserialise.
+
+
+*/
